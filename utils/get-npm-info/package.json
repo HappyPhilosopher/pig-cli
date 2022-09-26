@@ -1,7 +1,7 @@
 {
-  "name": "@pig-cli/core",
+  "name": "@pig-cli/get-npm-info",
   "version": "1.0.1",
-  "description": "pig-cli core",
+  "description": "get npm info",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
   "license": "ISC",
@@ -21,9 +21,14 @@
     "url": "git+https://github.com/HappyPhilosopher/pig-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@pig-cli/core.test.js"
+    "test": "node ./__tests__/@pig-cli/get-npm-info.test.js"
   },
   "bugs": {
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "semver": "^7.3.7",
+    "url-join": "^5.0.0"
   }
 }
