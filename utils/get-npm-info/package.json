@@ -27,8 +27,7 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "axios": "^0.27.2",
-    "semver": "^7.3.7",
-    "url-join": "^5.0.0"
+    "axios": "^1.1.3",
+    "semver": "^7.3.7"
   }
 }

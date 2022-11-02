@@ -5,20 +5,25 @@ const semver = require('semver');
 const colors = require('colors/safe');
 const userHome = require('user-home');
 const pathExists = require('path-exists');
+const commander = require('commander');
 
 const pkg = require('../package.json');
 const log = require('@pig-cli/log');
+const init = require('@pig-cli/init');
 const constant = require('./const');
 
-function core() {
+const program = new commander.Command();
+
+async function core() {
 	try {
 		checkPkgVersion();
 		checkNodeVersion();
 		checkRoot();
 		checkUserHome();
-		checkInputArgs();
+		// checkInputArgs(); 命令注册时已实现
 		checkEnv();
-		checkGlobalUpdate();
+		await checkGlobalUpdate();
+		registerCommand();
 	} catch (e) {
 		log.error(e.message);
 	}
@@ -99,14 +104,50 @@ function checkEnv() {
 /**
  * 检查并提示更新到最新版本
  */
-function checkGlobalUpdate() {
-	// 1. 获取当前版本号和模块名
+async function checkGlobalUpdate() {
 	const currentVersion = pkg.version;
 	const npmName = pkg.name;
-	// 2. 调用npm API，获取所有版本号
-	const { getNpmInfo } = require('@pig-cli/get-npm-info');
-	getNpmInfo(npmName);
-	// 3. 提取所有版本号，比对那些版本号是大于当前版本号
-	
-	// 4. 获取最新的版本号，提示用户更新到该版本
+	const { getNpmSemverVersion } = require('@pig-cli/get-npm-info');
+	const latestVersion = await getNpmSemverVersion(currentVersion, npmName);
+	if (latestVersion && semver.gt(latestVersion, currentVersion)) {
+		log.warn(
+			'===> 更新提示',
+			colors.yellow(
+				`请手动更新 ${npmName}，当前版本：${currentVersion}，最新版本：${latestVersion}\n更新命令：npm install -g ${npmName}`
+			)
+		);
+	}
+}
+
+function registerCommand() {
+	program
+		.name(Object.keys(pkg.bin)[0])
+		.usage('<command> [options]')
+		.version(pkg.version)
+		.option('-d, --debug', '是否开启调试模式', false);
+
+	program.command('init [projectName]').option('-f --force', '是否强制初始化项目', false).action(init);
+
+	// 监听debug模式
+	program.on('option:debug', function () {
+		process.env.LOG_LEVEL = program.opts().debug ? 'verbose' : 'info';
+		log.level = process.env.LOG_LEVEL;
+	});
+
+	// 监听未知命令
+	program.on('command:*', function (obj) {
+		const availableCommands = program.commands.map(cmd => cmd.name());
+		console.log(colors.red(`未知的命令：${obj[0]}`));
+		if (availableCommands.length > 0) {
+			console.log(colors.red(`可用命令：${availableCommands.join(',')}`));
+		}
+	});
+
+	program.parse(process.argv);
+
+	// 用户不输入任何参数时打印提示文档
+	if (program.args && program.args.length < 1) {
+		program.outputHelp();
+		console.log(); // 换行，美观
+	}
 }
