@@ -16,13 +16,7 @@ const program = new commander.Command();
 
 async function core() {
 	try {
-		checkPkgVersion();
-		checkNodeVersion();
-		checkRoot();
-		checkUserHome();
-		// checkInputArgs(); 命令注册时已实现
-		checkEnv();
-		await checkGlobalUpdate();
+		await prepare();
 		registerCommand();
 	} catch (e) {
 		log.error(e.message);
@@ -30,6 +24,18 @@ async function core() {
 }
 
 module.exports = core;
+
+/**
+ * 预启动阶段
+ */
+async function prepare() {
+	checkPkgVersion();
+	checkNodeVersion();
+	checkRoot();
+	checkUserHome();
+	checkEnv();
+	await checkGlobalUpdate();
+}
 
 /**
  * 获取当前项目版本号
@@ -64,24 +70,6 @@ function checkUserHome() {
 	if (!userHome || !pathExists.sync(userHome)) {
 		throw new Error(colors.red('当前登录页用户的主目录不存在！'));
 	}
-}
-
-/**
- * 检查输入的参数
- */
-function checkInputArgs() {
-	const minimist = require('minimist');
-	const args = minimist(process.argv.slice(2));
-	checkArgs(args);
-}
-
-/**
- * 检查参数
- * @param {Array} args
- */
-function checkArgs(args) {
-	process.env.LOG_LEVEL = args.debug ? 'verbose' : 'info';
-	log.level = process.env.LOG_LEVEL;
 }
 
 /**
@@ -124,14 +112,20 @@ function registerCommand() {
 		.name(Object.keys(pkg.bin)[0])
 		.usage('<command> [options]')
 		.version(pkg.version)
-		.option('-d, --debug', '是否开启调试模式', false);
+		.option('-d, --debug', '是否开启调试模式', false)
+		.option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', '');
 
-	program.command('init [projectName]').option('-f --force', '是否强制初始化项目', false).action(init);
+	program.command('init [projectName]').option('-f, --force', '是否强制初始化项目', false).action(init);
 
 	// 监听debug模式
 	program.on('option:debug', function () {
 		process.env.LOG_LEVEL = program.opts().debug ? 'verbose' : 'info';
 		log.level = process.env.LOG_LEVEL;
+	});
+
+	// 监听 targetPath 并存入环境变量
+	program.on('option:targetPath', function () {
+		process.env.CLI_TARGET_PATH = program.opts().targetPath;
 	});
 
 	// 监听未知命令
