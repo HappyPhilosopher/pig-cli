@@ -1,5 +1,3 @@
-'use strict';
-
 const log = require('npmlog');
 
 // 判断 debug 模式

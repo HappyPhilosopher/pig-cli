@@ -27,6 +27,6 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "log": "^6.3.1"
+    "npmlog": "^6.0.2"
   }
 }
