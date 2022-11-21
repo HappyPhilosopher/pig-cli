@@ -120,8 +120,8 @@ function registerCommand() {
   });
 
   // 监听未知命令
-  program.on('command:*', (obj) => {
-    const availableCommands = program.commands.map((cmd) => cmd.name());
+  program.on('command:*', obj => {
+    const availableCommands = program.commands.map(cmd => cmd.name());
     console.log(colors.red(`未知的命令：${obj[0]}`));
     if (availableCommands.length > 0) {
       console.log(colors.red(`可用命令：${availableCommands.join(',')}`));

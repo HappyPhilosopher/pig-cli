@@ -23,7 +23,7 @@ function getNpmInfo(npmName, registry) {
   const registryUrl = registry || getDefaultRegistry();
   const npmInfoUrl = `${registryUrl}/${npmName}`;
 
-  return axios.get(npmInfoUrl).then((res) => {
+  return axios.get(npmInfoUrl).then(res => {
     if (res.status !== 200) {
       return null;
     }
@@ -52,7 +52,7 @@ async function getNpmVersions(npmName, registry) {
  * @returns
  */
 function getSemverVersions(baseVersion, versions) {
-  return versions.filter((version) => semver.satisfies(version, `^${baseVersion}`)).sort((a, b) => semver.gt(b, a));
+  return versions.filter(version => semver.satisfies(version, `^${baseVersion}`)).sort((a, b) => semver.gt(b, a));
 }
 
 /**
