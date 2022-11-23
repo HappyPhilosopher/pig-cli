@@ -1,5 +1,7 @@
-function utils() {
-  return '来自utils的消息';
+function isObject(o) {
+  return Object.prototype.toString.call(o) === '[object Object]';
 }
 
-module.exports = utils;
+module.exports = {
+  isObject
+};

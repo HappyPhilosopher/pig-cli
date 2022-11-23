@@ -57,6 +57,20 @@ function getSemverVersions(baseVersion, versions) {
 
 /**
  * 获取最新版本
+ * @param {String} npmName
+ * @param {Boolean} registry npm源
+ * @returns
+ */
+async function getNpmLatestVersion(npmName, registry) {
+  const versions = await getNpmVersions(npmName, registry);
+  if (versions) {
+    return versions.sort((a, b) => semver.gt(b, a))[0];
+  }
+  return null;
+}
+
+/**
+ * 获取最新版本
  * @param {String} baseVersion 基准版本，该项目为当前版本
  * @param {String} npmName
  * @param {Boolean} registry npm源
@@ -74,5 +88,7 @@ async function getNpmSemverVersion(baseVersion, npmName, registry) {
 module.exports = {
   getNpmInfo,
   getNpmVersions,
-  getNpmSemverVersion
+  getNpmSemverVersion,
+  getNpmLatestVersion,
+  getDefaultRegistry
 };
