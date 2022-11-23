@@ -29,7 +29,6 @@ class Package {
 
   async prepare() {
     if (this.packageVersion === 'latest') {
-      console.log(this.packageName);
       this.packageVersion = await getNpmLatestVersion(this.packageName);
     }
   }

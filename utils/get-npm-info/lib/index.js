@@ -6,7 +6,7 @@ const semver = require('semver');
  * @param {Boolean} isOriginal 是否使用npm源（否则使用淘宝源）
  * @returns
  */
-function getDefaultRegistry(isOriginal = false) {
+function getDefaultRegistry(isOriginal = true) {
   return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
 }
 
