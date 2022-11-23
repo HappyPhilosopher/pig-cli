@@ -30,6 +30,7 @@
     "@pig-cli/format-path": "file:../../utils/format-path",
     "@pig-cli/get-npm-info": "file:../../utils/get-npm-info",
     "@pig-cli/utils": "file:../../utils/utils",
+    "fs-extra": "^10.1.0",
     "npminstall": "^6.6.1",
     "path-exists": "4.0.0",
     "pkg-dir": "5"

@@ -1,6 +1,7 @@
 const path = require('path');
 const pkgDir = require('pkg-dir').sync;
 const pathExists = require('path-exists');
+const fse = require('fs-extra');
 const npminstall = require('npminstall');
 const { isObject } = require('@pig-cli/utils');
 const formatPath = require('@pig-cli/format-path');
@@ -28,6 +29,9 @@ class Package {
   }
 
   async prepare() {
+    if (this.storeDir && !pathExists(this.storeDir)) {
+      fse.mkdirpSync(this.storeDir);
+    }
     if (this.packageVersion === 'latest') {
       this.packageVersion = await getNpmLatestVersion(this.packageName);
     }
@@ -66,10 +70,12 @@ class Package {
     });
   }
 
-  // /**
-  //  * 更新Package
-  //  */
-  // update() {}
+  /**
+   * 更新Package
+   */
+  async update() {
+    await this.prepare();
+  }
 
   /**
    * 获取入口文件的路径
