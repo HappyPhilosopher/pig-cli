@@ -1,7 +1,7 @@
 {
-  "name": "@pig-cli/log",
-  "version": "1.0.3",
-  "description": "pig-cli log",
+  "name": "@pig-cli/command",
+  "version": "1.0.5",
+  "description": "pig-cli command",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
   "license": "ISC",
@@ -21,13 +21,15 @@
     "url": "git+https://github.com/HappyPhilosopher/pig-cli.git"
   },
   "scripts": {
-    "test": "node ./__tests__/@pig-cli/log.test.js"
+    "test": "node ./__tests__/@pig-cli/command.test.js"
   },
   "bugs": {
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
+    "@pig-cli/log": "file:../../utils/log",
+    "colors": "1.4.0",
     "lodash": "^4.17.21",
-    "npmlog": "^6.0.2"
+    "semver": "^7.3.8"
   }
 }

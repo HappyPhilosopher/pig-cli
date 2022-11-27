@@ -1,11 +1,22 @@
-/**
- * 初始化
- * @param {String} projectName
- * @param {Object} options
- */
-function init(projectName, options) {
-  // 通过环境变量获取传入的 targetPath
-  console.log('init', projectName, options, process.env.CLI_TARGET_PATH);
+const Command = require('@pig-cli/command');
+const log = require('@pig-cli/log');
+
+class InitCommand extends Command {
+  init() {
+    this.projectName = this.argv[0] || '';
+    // this.force = this.argv;
+    log.verbose('===> projectName: ', this.projectName);
+    // log.verbose('===> force: ', this.force);
+  }
+
+  exec() {
+    console.log('init的业务逻辑');
+  }
+}
+
+function init(argv) {
+  return new InitCommand(argv);
 }
 
 module.exports = init;
+module.exports.InitCommand = InitCommand;

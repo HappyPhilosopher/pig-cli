@@ -25,5 +25,8 @@
   },
   "bugs": {
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21"
   }
 }

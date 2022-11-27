@@ -24,17 +24,6 @@ function checkPkgVersion() {
 }
 
 /**
- * 获取 Node 版本号
- */
-function checkNodeVersion() {
-  const currentVersion = process.version;
-  const lowestVersion = constant.LOWEST_NODE_VERSION;
-  if (semver.lt(currentVersion, lowestVersion)) {
-    throw new Error(colors.red(`pig-cli 需要安装 ${lowestVersion} 以上版本的 Node.js!`));
-  }
-}
-
-/**
  * 校验当前环境是否为 root 账户
  */
 function checkRoot() {
@@ -89,7 +78,6 @@ async function checkGlobalUpdate() {
  */
 async function prepare() {
   checkPkgVersion();
-  checkNodeVersion();
   checkRoot();
   checkUserHome();
   checkEnv();

@@ -1,4 +1,6 @@
 const path = require('path');
+const cp = require('child_process');
+const { cloneDeep } = require('lodash');
 const Package = require('@pig-cli/package');
 const log = require('@pig-cli/log');
 
@@ -8,11 +10,19 @@ const SETTINGS = {
 };
 const CACHE_DIR = 'dependencies';
 
+function spawn(command, args, options) {
+  const win32 = process.platform === 'win32';
+  const cmd = win32 ? 'cmd' : command;
+  const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
+
+  return cp.spawn(cmd, cmdArgs, options || {});
+}
+
 async function exec(...params) {
   let targetPath = process.env.CLI_TARGET_PATH;
   const homePath = process.env.CLI_HOME;
-  log.verbose('====>targetPath: ', targetPath);
-  log.verbose('====>homePath: ', homePath);
+  log.verbose('====> targetPath: ', targetPath);
+  log.verbose('====> homePath: ', homePath);
   const cmdObj = params[params.length - 1];
   const cmdName = cmdObj.name();
   const packageName = SETTINGS[cmdName];
@@ -48,7 +58,35 @@ async function exec(...params) {
 
   const rootFile = pkg.getRootFilePath();
   if (rootFile) {
-    require(rootFile)(...params);
+    try {
+      // require(rootFile)(params);
+      // 在node子进程中调用
+      const cloneParams = cloneDeep(params);
+      const cmd = cloneParams[cloneParams.length - 1];
+      const o = Object.create(null);
+      Object.keys(cmd).forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(cmd, key) && !key.startsWith('_') && key !== 'parent') {
+          o[key] = cmd[key];
+        }
+      });
+      cloneParams[cloneParams.length - 1] = o;
+      const code = `require('${rootFile}')(${JSON.stringify(cloneParams)})`;
+      const child = spawn('node', ['-e', code], {
+        cwd: process.cwd(),
+        stdio: 'inherit'
+      });
+      child.on('error', err => {
+        log.error(err.message);
+        // 返回一个错误结果
+        process.exit(1);
+      });
+      child.on('exit', e => {
+        log.verbose('命令执行成功：', e);
+        process.exit(e);
+      });
+    } catch (err) {
+      log.error(err.message);
+    }
   }
 }
 

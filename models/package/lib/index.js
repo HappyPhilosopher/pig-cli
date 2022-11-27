@@ -41,6 +41,10 @@ class Package {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`);
   }
 
+  getSpecificCacheFilePath(packageVersion) {
+    return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${packageVersion}@${this.packageName}`);
+  }
+
   /**
    * 判断当前Package是否存在
    */
@@ -75,20 +79,45 @@ class Package {
    */
   async update() {
     await this.prepare();
+    // 1.获取最新的npm模块版本号
+    const latestPackageVersion = await getNpmLatestVersion(this.packageName);
+    // 2.查询最新版本号对应的路径是否存在
+    const latestFilePath = this.getSpecificCacheFilePath(latestPackageVersion);
+    // 3.如果不存在，则直接安装最新版本
+    if (!pathExists(latestFilePath)) {
+      npminstall({
+        root: this.targetPath,
+        storeDir: this.storeDir,
+        registry: getDefaultRegistry(),
+        pkgs: [
+          {
+            name: this.packageName,
+            version: latestPackageVersion
+          }
+        ]
+      });
+    }
   }
 
   /**
    * 获取入口文件的路径
    */
   getRootFilePath() {
-    const dir = pkgDir(this.targetPath);
-    if (dir) {
-      const pkgFile = require(path.join(dir, 'package.json'));
-      if (pkgFile && pkgFile.main) {
-        return formatPath(path.resolve(dir, pkgFile.main));
+    function getRootFile(targetPath) {
+      const dir = pkgDir(targetPath);
+      if (dir) {
+        const pkgFile = require(path.join(dir, 'package.json'));
+        if (pkgFile && pkgFile.main) {
+          return formatPath(path.resolve(dir, pkgFile.main));
+        }
       }
+      return null;
     }
-    return null;
+
+    if (this.storeDir) {
+      return getRootFile(this.cacheFilePath);
+    }
+    return getRootFile(this.targetPath);
   }
 }
 

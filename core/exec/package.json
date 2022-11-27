@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "@pig-cli/log": "file:../../utils/log",
-    "@pig-cli/package": "file:../../models/package"
+    "@pig-cli/package": "file:../../models/package",
+    "lodash": "^4.17.21"
   }
 }
