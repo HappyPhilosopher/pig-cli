@@ -103,6 +103,7 @@ class InitCommand extends Command {
       // 下载动画
       const spinner = spinnerStart('正在下载模板……');
       sleep();
+
       try {
         await templateNpm.install();
         log.success('下载模板成功');
@@ -114,6 +115,7 @@ class InitCommand extends Command {
     } else {
       const spinner = spinnerStart('正在更新模板……');
       sleep();
+
       try {
         await templateNpm.update();
         log.success('更新模板成功');
