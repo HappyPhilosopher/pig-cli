@@ -1,6 +1,6 @@
 {
   "name": "@pig-cli/package",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "pig-cli package",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -27,9 +27,9 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "@pig-cli/format-path": "^1.0.7",
-    "@pig-cli/get-npm-info": "^1.0.7",
-    "@pig-cli/utils": "^1.0.7",
+    "@pig-cli/format-path": "^1.0.9",
+    "@pig-cli/get-npm-info": "^1.0.9",
+    "@pig-cli/utils": "^1.0.9",
     "fs-extra": "^10.1.0",
     "lodash": "^4.17.21",
     "npminstall": "^6.6.1",
