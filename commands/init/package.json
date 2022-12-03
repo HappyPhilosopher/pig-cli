@@ -29,6 +29,12 @@
 	"dependencies": {
 		"@pig-cli/command": "file:../../models/command",
 		"@pig-cli/log": "file:../../utils/log",
-		"lodash": "^4.17.21"
+		"@pig-cli/utils": "file:../../utils/utils",
+		"@pig-cli/request": "file:../../utils/request",
+		"@pig-cli/package": "file:../../models/package",
+		"fs-extra": "^11.0.0",
+		"inquirer": "*8.0.0",
+		"lodash": "^4.17.21",
+		"semver": "^7.3.7"
 	}
 }

@@ -20,7 +20,7 @@ const program = new commander.Command();
  * 获取当前项目版本号
  */
 function checkPkgVersion() {
-  log.notice('===> current version: ', pkg.version);
+  log.verbose('===> current version: ', pkg.version);
 }
 
 /**
