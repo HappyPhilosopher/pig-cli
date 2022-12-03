@@ -17,6 +17,7 @@ class Command {
     }
 
     this.argv = argv;
+    // eslint-disable-next-line no-unused-vars
     const runner = new Promise((resolve, reject) => {
       let chain = Promise.resolve();
       chain = chain.then(() => Command.checkNodeVersion());

@@ -41,6 +41,11 @@ class Package {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${this.packageVersion}@${this.packageName}`);
   }
 
+  /**
+   * 获取指定的缓存路径
+   * @param {String} packageVersion
+   * @returns
+   */
   getSpecificCacheFilePath(packageVersion) {
     return path.resolve(this.storeDir, `_${this.cacheFilePathPrefix}@${packageVersion}@${this.packageName}`);
   }

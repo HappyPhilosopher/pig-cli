@@ -18,6 +18,10 @@ function spawn(command, args, options) {
   return cp.spawn(cmd, cmdArgs, options || {});
 }
 
+/**
+ * 执行程序
+ * @param  {...any} params
+ */
 async function exec(...params) {
   let targetPath = process.env.CLI_TARGET_PATH;
   const homePath = process.env.CLI_HOME;

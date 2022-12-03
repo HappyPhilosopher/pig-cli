@@ -100,7 +100,6 @@ class InitCommand extends Command {
       packageVersion: version
     });
     if (!await templateNpm.exists()) {
-      // 下载动画
       const spinner = spinnerStart('正在下载模板……');
       sleep();
 

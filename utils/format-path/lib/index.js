@@ -4,7 +4,7 @@ const path = require('path');
  * 对不同操作系统路径的兼容
  * MacOS为 / ，Windows为 \
  * @param {String} p 路径
- * @returns
+ * @returns {Stirng}
  */
 function formatPath(p) {
   if (p && typeof p === 'string') {

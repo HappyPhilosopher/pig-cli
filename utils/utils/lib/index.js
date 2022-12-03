@@ -1,5 +1,10 @@
 const { Spinner } = require('cli-spinner');
 
+/**
+ * 判断是否为对象
+ * @param {Object} o
+ * @returns
+ */
 function isObject(o) {
   return Object.prototype.toString.call(o) === '[object Object]';
 }

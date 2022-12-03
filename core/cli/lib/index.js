@@ -24,7 +24,7 @@ function checkPkgVersion() {
 }
 
 /**
- * 校验当前环境是否为 root 账户
+ * 校验当前环境是否为root账户
  */
 function checkRoot() {
   rootCheck();

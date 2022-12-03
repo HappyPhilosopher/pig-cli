@@ -2,7 +2,7 @@ const axios = require('axios');
 const semver = require('semver');
 
 /**
- * 获取默认npm源
+ * 获取默认 npm 源
  * @param {Boolean} isOriginal 是否使用npm源（否则使用淘宝源）
  * @returns
  */
