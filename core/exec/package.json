@@ -1,6 +1,6 @@
 {
   "name": "@pig-cli/exec",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "pig-cli exec",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -27,8 +27,8 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "@pig-cli/log": "^1.0.10",
-    "@pig-cli/package": "^1.0.10",
+    "@pig-cli/log": "^1.0.11",
+    "@pig-cli/package": "^1.0.11",
     "lodash": "^4.17.21"
   },
   "gitHead": "0630f22cfd6b19105e9423443b09c56260211c61"

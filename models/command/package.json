@@ -1,6 +1,6 @@
 {
   "name": "@pig-cli/command",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "pig-cli command",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -27,7 +27,7 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "@pig-cli/log": "^1.0.10",
+    "@pig-cli/log": "^1.0.11",
     "colors": "1.4.0",
     "lodash": "^4.17.21",
     "semver": "^7.3.8"
