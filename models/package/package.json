@@ -27,13 +27,14 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "@pig-cli/format-path": "file:../../utils/format-path",
-    "@pig-cli/get-npm-info": "file:../../utils/get-npm-info",
-    "@pig-cli/utils": "file:../../utils/utils",
+    "@pig-cli/format-path": "^1.0.6",
+    "@pig-cli/get-npm-info": "^1.0.6",
+    "@pig-cli/utils": "^1.0.6",
     "fs-extra": "^10.1.0",
     "lodash": "^4.17.21",
     "npminstall": "^6.6.1",
     "path-exists": "4.0.0",
     "pkg-dir": "5"
-  }
+  },
+  "gitHead": "352a0fd6f137f3eca4a6b96d05a387b0c646443e"
 }

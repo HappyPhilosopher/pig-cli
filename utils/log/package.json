@@ -29,5 +29,6 @@
   "dependencies": {
     "lodash": "^4.17.21",
     "npmlog": "^6.0.2"
-  }
+  },
+  "gitHead": "352a0fd6f137f3eca4a6b96d05a387b0c646443e"
 }

@@ -29,5 +29,6 @@
   "dependencies": {
     "cli-spinner": "^0.2.10",
     "lodash": "^4.17.21"
-  }
+  },
+  "gitHead": "352a0fd6f137f3eca4a6b96d05a387b0c646443e"
 }

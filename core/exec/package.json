@@ -27,8 +27,9 @@
     "url": "https://github.com/HappyPhilosopher/pig-cli/issues"
   },
   "dependencies": {
-    "@pig-cli/log": "file:../../utils/log",
-    "@pig-cli/package": "file:../../models/package",
+    "@pig-cli/log": "^1.0.6",
+    "@pig-cli/package": "^1.0.6",
     "lodash": "^4.17.21"
-  }
+  },
+  "gitHead": "352a0fd6f137f3eca4a6b96d05a387b0c646443e"
 }
