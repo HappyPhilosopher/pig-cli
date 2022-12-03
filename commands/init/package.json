@@ -1,6 +1,6 @@
 {
 	"name": "@pig-cli/init",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"description": "pig-cli init",
 	"author": "painful_pig <576772193@qq.com>",
 	"homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -27,11 +27,11 @@
 		"url": "https://github.com/HappyPhilosopher/pig-cli/issues"
 	},
 	"dependencies": {
-		"@pig-cli/command": "^1.0.6",
-		"@pig-cli/log": "^1.0.6",
-		"@pig-cli/package": "^1.0.6",
-		"@pig-cli/request": "^1.0.6",
-		"@pig-cli/utils": "^1.0.6",
+		"@pig-cli/command": "^1.0.7",
+		"@pig-cli/log": "^1.0.7",
+		"@pig-cli/package": "^1.0.7",
+		"@pig-cli/request": "^1.0.7",
+		"@pig-cli/utils": "^1.0.7",
 		"fs-extra": "^11.0.0",
 		"inquirer": "*8.0.0",
 		"lodash": "^4.17.21",
