@@ -1,6 +1,6 @@
 {
 	"name": "@pig-cli/core",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"description": "pig-cli core",
 	"author": "painful_pig <576772193@qq.com>",
 	"homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -32,7 +32,7 @@
 	"dependencies": {
 		"@pig-cli/exec": "^1.0.7",
 		"@pig-cli/get-npm-info": "^1.0.7",
-		"@pig-cli/init": "^1.0.7",
+		"@pig-cli/init": "^1.0.8",
 		"@pig-cli/log": "^1.0.7",
 		"colors": "^1.4.0",
 		"commander": "^9.4.1",
