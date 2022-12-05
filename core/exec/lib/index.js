@@ -1,22 +1,14 @@
 const path = require('path');
-const cp = require('child_process');
 const { cloneDeep } = require('lodash');
 const Package = require('@pig-cli/package');
 const log = require('@pig-cli/log');
+const { spawnUtil } = require('@pig-cli/utils');
 
 let pkg;
 const SETTINGS = {
   init: '@pig-cli/init'
 };
 const CACHE_DIR = 'dependencies';
-
-function spawn(command, args, options) {
-  const win32 = process.platform === 'win32';
-  const cmd = win32 ? 'cmd' : command;
-  const cmdArgs = win32 ? ['/c'].concat(command, args) : args;
-
-  return cp.spawn(cmd, cmdArgs, options || {});
-}
 
 /**
  * 执行程序
@@ -75,7 +67,7 @@ async function exec(...params) {
       });
       cloneParams[cloneParams.length - 1] = o;
       const code = `require('${rootFile}')(${JSON.stringify(cloneParams)})`;
-      const child = spawn('node', ['-e', code], {
+      const child = spawnUtil('node', ['-e', code], {
         cwd: process.cwd(),
         stdio: 'inherit'
       });

@@ -7,11 +7,14 @@ const semver = require('semver');
 const Command = require('@pig-cli/command');
 const log = require('@pig-cli/log');
 const Package = require('@pig-cli/package');
-const { spinnerStart, sleep } = require('@pig-cli/utils');
+const { spinnerStart, sleep, execAsync } = require('@pig-cli/utils');
 const getProjectTemplate = require('./get-project-template');
 
 const TYPE_PROJECT = 'project';
 const TYPE_COMPONENT = 'component';
+const TEMPLATE_TYPE_NORMAL = 'normal';
+const TEMPLATE_TYPE_CUSTOM = 'custom';
+const WHITE_COMMAND = ['npm', 'cnpm'];
 
 class InitCommand extends Command {
   init() {
@@ -32,10 +35,85 @@ class InitCommand extends Command {
         this.projectInfo = projectInfo;
         await this.downloadTemplate();
         // 3.安装模板
+        await this.installTemplate();
       }
     } catch (err) {
       log.error(err.message);
     }
+  }
+
+  async installTemplate() {
+    if (this.templateInfo) {
+      if (!this.templateInfo.type || this.templateInfo.type === TEMPLATE_TYPE_NORMAL) {
+        // 标准安装
+        await this.installNormalTemplate();
+      } else if (this.templateInfo.type === TEMPLATE_TYPE_CUSTOM) {
+        // 自定义安装
+        await this.installCustomTemplate();
+      } else {
+        throw new Error('无法识别项目模板');
+      }
+    } else {
+      throw new Error('项目模板信息不存在');
+    }
+  }
+
+  static async execCommand(command, errMsg) {
+    let installRet;
+    if (command) {
+      const cmdArray = command.split(' ');
+      const cmd = InitCommand.checkCommand(cmdArray[0]);
+      if (!cmd) {
+        throw new Error('命令不存在');
+      }
+      const args = cmdArray.slice(1);
+      installRet = await execAsync(cmd, args, {
+        stdio: 'inherit',
+        cwd: process.cwd()
+      });
+    }
+    if (installRet !== 0) {
+      throw new Error(errMsg);
+    }
+    return installRet;
+  }
+
+  async installNormalTemplate() {
+    // 拷贝模板代码至当前目录
+    const spinner = spinnerStart('正在安装模板……');
+    await sleep();
+    try {
+      const templatePath = path.resolve(this.templateNpm.cacheFilePath, 'template');
+      const targetPath = process.cwd();
+      // 确保目录存在（不存在则生成）
+      fse.ensureDirSync(templatePath);
+      fse.ensureDirSync(targetPath);
+      // 拷贝代码
+      fse.copySync(templatePath, targetPath);
+    } catch (e) {
+      throw new Error(e);
+    } finally {
+      spinner.stop(true);
+      log.success('安装模板成功');
+    }
+    const { installCommand, startCommand } = this.templateInfo;
+    // 安装依赖
+    await InitCommand.execCommand(installCommand, '依赖安装失败');
+    // 启动命令执行
+    await InitCommand.execCommand(startCommand, '项目启动失败');
+  }
+
+  /**
+   * 判断命令是否为白名单，防止注入非法命令
+   * @param {String} cmd
+   * @returns
+   */
+  static checkCommand(cmd) {
+    return WHITE_COMMAND.includes(cmd) ? cmd : null;
+  }
+
+  async installCustomTemplate() {
+    console.log('安装自定义模板');
   }
 
   async prepare() {
@@ -90,6 +168,7 @@ class InitCommand extends Command {
   async downloadTemplate() {
     const { projectTemplate } = this.projectInfo;
     const templateInfo = this.template.find(item => item.npmName === projectTemplate);
+    this.templateInfo = templateInfo;
     const targetPath = path.resolve(homedir(), '.pig-cli', 'template');
     const storeDir = path.resolve(homedir(), '.pig-cli', 'template', 'node_modules');
     const { npmName, version } = templateInfo;
@@ -105,11 +184,14 @@ class InitCommand extends Command {
 
       try {
         await templateNpm.install();
-        log.success('下载模板成功');
       } catch (e) {
         throw new Error(e);
       } finally {
         spinner.stop(true);
+        if (templateNpm.exists()) {
+          log.success('下载模板成功');
+          this.templateNpm = templateNpm;
+        }
       }
     } else {
       const spinner = spinnerStart('正在更新模板……');
@@ -117,11 +199,14 @@ class InitCommand extends Command {
 
       try {
         await templateNpm.update();
-        log.success('更新模板成功');
       } catch (e) {
         throw new Error(e);
       } finally {
         spinner.stop(true);
+        if (templateNpm.exists()) {
+          log.success('更新模板成功');
+          this.templateNpm = templateNpm;
+        }
       }
     }
   }
@@ -213,12 +298,21 @@ class InitCommand extends Command {
     return projectInfo;
   }
 
+  /**
+   * 判断传入地址是否为空
+   * @param {String} localPath
+   * @returns {Boolean}
+   */
   static isDirEmpty(localPath) {
     let fileList = fs.readdirSync(localPath);
     fileList = fileList.filter(file => (!file.startsWith('.') && !file.includes('node_modules')));
     return !fileList || fileList.length <= 0;
   }
 
+  /**
+   * 创建选项
+   * @returns
+   */
   createTemplatechoice() {
     return this.template.map(item => ({
       value: item.npmName,
