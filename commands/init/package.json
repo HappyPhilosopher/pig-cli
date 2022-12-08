@@ -32,8 +32,10 @@
 		"@pig-cli/package": "^1.0.13",
 		"@pig-cli/request": "^1.0.12",
 		"@pig-cli/utils": "^1.0.13",
+		"ejs": "^3.1.8",
 		"fs-extra": "^11.0.0",
-		"inquirer": "*8.0.0",
+		"glob": "^8.0.3",
+		"inquirer": "^8.0.0",
 		"lodash": "^4.17.21",
 		"semver": "^7.3.7"
 	},

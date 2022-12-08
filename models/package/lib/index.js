@@ -102,6 +102,7 @@ class Package {
         ]
       });
     }
+    this.packageVersion = latestPackageVersion;
   }
 
   /**
