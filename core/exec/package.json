@@ -1,6 +1,6 @@
 {
   "name": "@pig-cli/exec",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "pig-cli exec",
   "author": "painful_pig <576772193@qq.com>",
   "homepage": "https://github.com/HappyPhilosopher/pig-cli#readme",
@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "@pig-cli/log": "^1.0.11",
-    "@pig-cli/package": "^1.0.13",
+    "@pig-cli/package": "^1.0.14",
     "@pig-cli/utils": "file:../../utils/utils",
     "lodash": "^4.17.21"
   },
