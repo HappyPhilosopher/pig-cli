@@ -198,6 +198,149 @@ class InitCommand extends Command {
     }
   }
 
+  /**
+   * 1.选择创建项目或组件
+   * 2.获取项目的基本信息
+   * @returns {Object} 项目基本信息
+   */
+  async getProjectInfo() {
+    function isValidName(v) {
+      return /^[a-z]+(([-][a-z]+)*)([a-z0-9]?)$/.test(v);
+    }
+
+    let projectInfo = {};
+    let isProjectNameValid = false;
+    // 先判断命令行传入的项目名称是否合法
+    if (isValidName(this.projectName)) {
+      isProjectNameValid = true;
+      projectInfo.projectName = this.projectName;
+    }
+
+    // 选择创建项目或组件
+    const { type } = await inquirer.prompt({
+      type: 'list',
+      name: 'type',
+      message: '请选择初始化类型',
+      default: TYPE_PROJECT,
+      choices: [
+        {
+          name: '项目',
+          value: TYPE_PROJECT
+        },
+        {
+          name: '组件',
+          value: TYPE_COMPONENT
+        }
+      ]
+    });
+    log.verbose('===> type: ', type);
+    this.template = this.template.filter(template => template.tag.includes(type));
+    const title = type === TYPE_PROJECT ? '项目' : '组件';
+
+    const projectPrompt = [];
+    const projectNamePrompt = {
+      type: 'input',
+      name: 'projectName',
+      message: `请输入${title}名称`,
+      default: '',
+      // 1.首字符必须为小写
+      // 2.尾字符必须为小写字母或数字
+      // 3.字符可用 - 连接
+      // 4.- 连接的字符不能直接是数字
+      validate(v) {
+        const done = this.async();
+
+        setTimeout(() => {
+          if (!isValidName(v)) {
+            done('请输入合法的项目名称');
+            return;
+          }
+          done(null, true);
+        }, 0);
+      }
+    };
+    // 命令行传入的项目名称不合法则使用 inquirer 输入的用户名
+    if (!isProjectNameValid) {
+      projectPrompt.push(projectNamePrompt);
+    }
+    // 添加版本和模板选项
+    projectPrompt.push(
+      {
+        type: 'input',
+        name: 'projectVersion',
+        message: `请输入${title}版本号`,
+        default: '1.0.0',
+        validate(v) {
+          const done = this.async();
+
+          setTimeout(() => {
+            if (!semver.valid(v)) {
+              done('请输入合法的版本号，如1.0.0');
+              return;
+            }
+            done(null, true);
+          }, 0);
+        },
+        filter: v => (semver.valid(v) ? semver.valid(v) : v)
+      },
+      {
+        type: 'list',
+        name: 'projectTemplate',
+        message: `请选择${title}模板`,
+        choices: this.createTemplatechoice()
+      }
+    );
+
+    // 获取项目的基本信息
+    if (type === TYPE_PROJECT) {
+      const project = await inquirer.prompt(projectPrompt);
+      projectInfo = {
+        ...projectInfo,
+        type,
+        ...project
+      };
+    } else if (type === TYPE_COMPONENT) {
+      // 获取组件的描述信息
+      const descriptionPrompt = {
+        type: 'input',
+        name: 'componentDescription',
+        message: '请输入组件描述信息',
+        default: '',
+        validate(v) {
+          const done = this.async();
+
+          setTimeout(() => {
+            if (!v) {
+              done('请输入组件描述信息');
+              return;
+            }
+            done(null, true);
+          }, 0);
+        }
+      };
+      projectPrompt.push(descriptionPrompt);
+      const component = await inquirer.prompt(projectPrompt);
+      projectInfo = {
+        ...projectInfo,
+        type,
+        ...component
+      };
+    }
+
+    // 如果组件描述信息存在，则将其添加到projectInfo中
+    if (projectInfo.componentDescription) {
+      projectInfo.description = projectInfo.componentDescription;
+    }
+
+    return projectInfo;
+  }
+
+  /**
+   * 1.判断项目是否存在
+   * 2.清空当前目录
+   * 3.返回项目信息
+   * @returns
+   */
   async prepare() {
     // 0.判断项目模板是否存在
     const template = await getProjectTemplate();
@@ -292,139 +435,6 @@ class InitCommand extends Command {
         }
       }
     }
-  }
-
-  /**
-   * 1.选择创建项目或组件
-   * 2.获取项目的基本信息
-   * @returns {Object} 项目基本信息
-   */
-  async getProjectInfo() {
-    function isValidName(v) {
-      return /^[a-z]+(([-][a-z]+)*)([a-z0-9]?)$/.test(v);
-    }
-
-    let projectInfo = {};
-    let isProjectNameValid = false;
-    if (isValidName(this.projectName)) {
-      isProjectNameValid = true;
-      projectInfo.projectName = this.projectName;
-    }
-
-    // 选择创建项目或组件
-    const { type } = await inquirer.prompt({
-      type: 'list',
-      name: 'type',
-      message: '请选择初始化类型',
-      default: TYPE_PROJECT,
-      choices: [
-        {
-          name: '项目',
-          value: TYPE_PROJECT
-        },
-        {
-          name: '组件',
-          value: TYPE_COMPONENT
-        }
-      ]
-    });
-    log.verbose('===> type: ', type);
-    this.template = this.template.filter(template => template.tag.includes(type));
-    const title = type === TYPE_PROJECT ? '项目' : '组件';
-
-    const projectPrompt = [];
-    const projectNamePrompt = {
-      type: 'input',
-      name: 'projectName',
-      message: `请输入${title}名称`,
-      default: '',
-      // 1.首字符必须为小写
-      // 2.尾字符必须为小写字母或数字
-      // 3.字符可用 - 连接
-      // 4.- 连接的字符不能直接是数字
-      validate(v) {
-        const done = this.async();
-
-        setTimeout(() => {
-          if (!isValidName(v)) {
-            done('请输入合法的项目名称');
-            return;
-          }
-          done(null, true);
-        }, 0);
-      }
-    };
-    if (!isProjectNameValid) {
-      projectPrompt.push(projectNamePrompt);
-    }
-    projectPrompt.push(
-      {
-        type: 'input',
-        name: 'projectVersion',
-        message: `请输入${title}版本号`,
-        default: '1.0.0',
-        validate(v) {
-          const done = this.async();
-
-          setTimeout(() => {
-            if (!semver.valid(v)) {
-              done('请输入合法的版本号，如1.0.0');
-              return;
-            }
-            done(null, true);
-          }, 0);
-        },
-        filter: v => (semver.valid(v) ? semver.valid(v) : v)
-      },
-      {
-        type: 'list',
-        name: 'projectTemplate',
-        message: `请选择${title}模板`,
-        choices: this.createTemplatechoice()
-      }
-    );
-
-    // 获取项目的基本信息
-    if (type === TYPE_PROJECT) {
-      const project = await inquirer.prompt(projectPrompt);
-      projectInfo = {
-        ...projectInfo,
-        type,
-        ...project
-      };
-    } else if (type === TYPE_COMPONENT) {
-      // 获取组件的基本信息
-      const descriptionPrompt = {
-        type: 'input',
-        name: 'componentDescription',
-        message: '请输入组件描述信息',
-        default: '',
-        validate(v) {
-          const done = this.async();
-
-          setTimeout(() => {
-            if (!v) {
-              done('请输入组件描述信息');
-              return;
-            }
-            done(null, true);
-          }, 0);
-        }
-      };
-      projectPrompt.push(descriptionPrompt);
-      const component = await inquirer.prompt(projectPrompt);
-      projectInfo = {
-        ...projectInfo,
-        type,
-        ...component
-      };
-    }
-
-    if (projectInfo.componentDescription) {
-      projectInfo.description = projectInfo.componentDescription;
-    }
-
-    return projectInfo;
   }
 
   /**

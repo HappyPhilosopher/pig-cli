@@ -20,6 +20,7 @@ async function exec(...params) {
   log.verbose('====> targetPath: ', targetPath);
   log.verbose('====> homePath: ', homePath);
   const cmdObj = params[params.length - 1];
+  // 命令名称
   const cmdName = cmdObj.name();
   const packageName = SETTINGS[cmdName];
   const packageVersion = 'latest';

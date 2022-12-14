@@ -90,7 +90,7 @@ class Package {
     const latestFilePath = this.getSpecificCacheFilePath(latestPackageVersion);
     // 3.如果不存在，则直接安装最新版本
     if (!pathExists(latestFilePath)) {
-      npminstall({
+      await npminstall({
         root: this.targetPath,
         storeDir: this.storeDir,
         registry: getDefaultRegistry(),
@@ -110,6 +110,7 @@ class Package {
    */
   getRootFilePath() {
     function getRootFile(targetPath) {
+      // 1. 获取 package.json 所在目录
       const dir = pkgDir(targetPath);
       if (dir) {
         const pkgFile = require(path.join(dir, 'package.json'));

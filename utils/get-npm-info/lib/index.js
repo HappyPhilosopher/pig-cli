@@ -1,5 +1,6 @@
 const axios = require('axios');
 const semver = require('semver');
+const urlJoin = require('url-join');
 
 /**
  * 获取默认 npm 源
@@ -7,7 +8,7 @@ const semver = require('semver');
  * @returns
  */
 function getDefaultRegistry(isOriginal = true) {
-  return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npm.taobao.org';
+  return isOriginal ? 'https://registry.npmjs.org' : 'https://registry.npmmirror.com';
 }
 
 /**
@@ -21,14 +22,14 @@ function getNpmInfo(npmName, registry) {
     return null;
   }
   const registryUrl = registry || getDefaultRegistry();
-  const npmInfoUrl = `${registryUrl}/${npmName}`;
+  const npmInfoUrl = urlJoin(registryUrl, npmName);
 
   return axios.get(npmInfoUrl).then(res => {
     if (res.status !== 200) {
       return null;
     }
     return res.data;
-  });
+  }).catch(err => Promise.reject(err));
 }
 
 /**

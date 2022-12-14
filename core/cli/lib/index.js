@@ -1,16 +1,16 @@
 const path = require('path');
+const { homedir } = require('os');
 const semver = require('semver');
 const colors = require('colors/safe');
-const userHome = require('user-home');
 const pathExists = require('path-exists');
 const commander = require('commander');
 const rootCheck = require('root-check');
 const dotenv = require('dotenv');
 
 const log = require('@pig-cli/log');
-// const init = require('@pig-cli/init');
 const exec = require('@pig-cli/exec');
 const { getNpmSemverVersion } = require('@pig-cli/get-npm-info');
+const formatPath = require('@pig-cli/format-path');
 const pkg = require('../package.json');
 const constant = require('./const');
 
@@ -20,7 +20,7 @@ const program = new commander.Command();
  * 获取当前项目版本号
  */
 function checkPkgVersion() {
-  log.verbose('===> current version: ', pkg.version);
+  log.verbose('===> current core version: ', pkg.version);
 }
 
 /**
@@ -34,6 +34,7 @@ function checkRoot() {
  * 校验用户主目录是否存在
  */
 function checkUserHome() {
+  const userHome = homedir();
   if (!userHome || !pathExists.sync(userHome)) {
     throw new Error(colors.red('当前登录页用户的主目录不存在！'));
   }
@@ -43,6 +44,7 @@ function checkUserHome() {
  * 检查环境变量
  */
 function checkEnv() {
+  const userHome = homedir();
   const dotenvPath = path.resolve(userHome, '.env');
 
   if (pathExists(dotenvPath)) {
@@ -50,9 +52,10 @@ function checkEnv() {
       path: dotenvPath
     });
   }
-  process.env.CLI_HOME = process.env.CLI_HOME || constant.DEFAULT_CLI_HOME;
+  const cliHomePath = path.resolve(userHome, process.env.CLI_HOME || constant.DEFAULT_CLI_HOME);
+  process.env.CLI_HOME = formatPath(cliHomePath);
 
-  log.verbose('===> 环境变量: ', process.env.CLI_HOME);
+  log.notice('===> 环境变量CLI_HOME: ', process.env.CLI_HOME);
 }
 
 /**
@@ -105,7 +108,7 @@ function registerCommand() {
 
   // 监听 targetPath 并存入环境变量
   program.on('option:targetPath', () => {
-    process.env.CLI_TARGET_PATH = program.opts().targetPath;
+    process.env.CLI_TARGET_PATH = program.optsWithGlobals().targetPath;
   });
 
   // 监听未知命令
