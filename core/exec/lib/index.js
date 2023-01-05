@@ -6,7 +6,8 @@ const { spawnUtil } = require('@pig-cli/utils');
 
 let pkg;
 const SETTINGS = {
-  init: '@pig-cli/init'
+  init: '@pig-cli/init',
+  publish: '@pig-cli/publish'
 };
 const CACHE_DIR = 'dependencies';
 

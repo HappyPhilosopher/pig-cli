@@ -98,7 +98,11 @@ function registerCommand() {
     .option('-d, --debug', '是否开启调试模式', false)
     .option('-tp, --targetPath <targetPath>', '是否指定本地调试文件路径', '');
 
+  // 项目初始化命令
   program.command('init [projectName]').option('-f, --force', '是否强制初始化项目', false).action(exec);
+
+  // 发布命令
+  program.command('publish').action(exec);
 
   // 监听debug模式
   program.on('option:debug', () => {
